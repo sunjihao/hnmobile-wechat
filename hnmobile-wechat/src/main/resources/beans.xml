@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	    http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<!-- service -->
+	<bean id="serialNumberMgrService" 
+	      class="com.hnmobile.wechat.mvc.service.SerialNumberMgrService" 
+	      init-method="init"></bean>
+    <bean id="loginService" class="com.hnmobile.wechat.mvc.service.LoginService" factory-method="createInstance"></bean>
+    <bean id="userMgrService" class="com.hnmobile.wechat.mvc.service.UserMgrService"></bean>
+    <bean id="roleMgrService" class="com.hnmobile.wechat.mvc.service.RoleMgrService"></bean>
+    <bean id="selectorService" class="com.hnmobile.wechat.mvc.service.SelectorService"></bean>
+    <!-- dao -->
+    <bean id="loginDao" class="com.hnmobile.wechat.dao.LoginDao" parent="jdbcBaseDao"/>
+    <bean id="userDao" class="com.hnmobile.wechat.dao.UserDao" parent="jdbcBaseDao"/>
+    <bean id="roleDao" class="com.hnmobile.wechat.dao.RoleDao" parent="jdbcBaseDao"/>
+    
+    <bean id="commonDao" class="com.hnmobile.wechat.dao.CommonDao" parent="jdbcBaseDao"/>
+</beans>

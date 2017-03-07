@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd 
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop.xsd 
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+	<!--
+		CSRF protection. Here we only include the CsrfFilter instead of all of Spring Security.
+		See http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#csrf for more information on
+		Spring Security's CSRF protection
+	-->
+	<bean id="csrfFilter" class="org.springframework.security.web.csrf.CsrfFilter">
+		<constructor-arg>
+			<bean class="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository"/>
+		</constructor-arg>
+	</bean>
+    
+    <bean id="dataSourceConfig" class="com.zaxxer.hikari.HikariConfig">
+<!--         <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mmc"/> -->
+        <property name="username" value="mobile_member"/>
+        <property name="password" value="sunjihao"/>
+    </bean>
+    
+    <!-- HikariCP 高性能数据库连接池 -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="dataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mmc"/>
+        <property name="username" value="mobile_member"/>
+        <property name="password" value="sunjihao"/>
+         <!-- Default settings -->
+         <!-- 控制自动提交行为 default：true -->
+         <property name="autoCommit" value="true"/>
+         <!--连接池获取的连接是否只读 default:false-->
+         <property name="readOnly" value="false"/>
+         <property name="maximumPoolSize" value="8"/>
+         <property name="minimumIdle" value="0"/>
+         <!--控制连接的事务隔离等级 default:none-->
+         <!-- <property name="transactionIsolation" value=""/> -->
+         <!--设置catalog以便于支持查看catalogs ， 若不指定的话将直接使用 JDBC driver使用的 default:none-->
+         <property name="connectionTestQuery" value="SELECT 1 "></property>
+         <!--最大连接超时时间 default：30秒-->
+         <!-- <property name="connectionTimeout" value="${jdbc.connectionTimeout}"/> -->
+         <!--最大空闲超时时间 default：10分钟   -->
+         <!-- <property name="idleTimeout" value="${jdbc.idleTimeout}"/> -->
+         <!--连接池中一个连接的最大生命周期 default：30分钟-->
+         <!-- <property name="maxLifetime" value="${jdbc.maxLifetime}"/> -->
+    </bean>
+    <bean id="jdbcBaseDao" class="com.hnmobile.wechat.dao.JdbcBaseDao">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <context:component-scan base-package="com.hnmobile.wechat.mvc" />	
+	<bean id="requestDataValueProcessor" class="org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor"/>
+	<import resource="beans.xml" />
+	<tx:annotation-driven transaction-manager="txManager"/>
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+</beans>
